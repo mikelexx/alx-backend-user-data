@@ -6,8 +6,8 @@ import re
 from typing import List
 
 
-def filter_datum(fields: List[str], redaction: str,
-                 message: str, separator: str) -> str:
+def filter_datum(fields: List[str], redaction: str, message: str,
+                 separator: str) -> str:
     """
     obfuscates a log message (message)
     Args:
@@ -20,10 +20,6 @@ def filter_datum(fields: List[str], redaction: str,
     returns: the log message obfuscated
     """
     return re.sub(
-
-            r'([^{}]*=[^{}]*){}'.format(separator, separator, separator),
-        lambda match: re.sub(r'=.+', f'={redaction}{separator}',
-                                     match.group(0))
-        if match.group(0).split('=')[0] in fields else match.group(0),
-        message
-    )
+        r'([^{}]*=[^{}]*){}'.format(separator, separator, separator), lambda
+        match: re.sub(r'=.+', f'={redaction}{separator}', match.group(0))
+        if match.group(0).split('=')[0] in fields else match.group(0), message)
