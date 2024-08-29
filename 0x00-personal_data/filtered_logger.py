@@ -27,8 +27,11 @@ class RedactingFormatter(logging.Formatter):
         """
         formats a log record while obfuscating sensitive fields
         """
-        return filter_datum(self.fields, self.REDACTION, record.getMessage(),
-                            self.SEPARATOR)
+        message = filter_datum(self.fields, self.REDACTION,
+                               record.getMessage(), self.SEPARATOR)
+        record.msg = message
+        formatted_message = super().format(record)
+        return formatted_message
 
 
 def filter_datum(fields: List[str], redaction: str, message: str,
