@@ -20,7 +20,8 @@ def filter_datum(fields: List[str], redaction: str,
     returns: the log message obfuscated
     """
     return re.sub(
-        r'([^;]*=[^;]*);',
+
+            r'([^{}]*=[^{}]*){}'.format(separator, separator, separator),
         lambda match: re.sub(r'=.+', f'={redaction}{separator}',
                                      match.group(0))
         if match.group(0).split('=')[0] in fields else match.group(0),
