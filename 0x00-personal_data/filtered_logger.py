@@ -21,7 +21,7 @@ class RedactingFormatter(logging.Formatter):
         initialize formatter with with sensitive fields to redact
         """
         super(RedactingFormatter, self).__init__(self.FORMAT)
-        self.fields = [] if len(fields) == 0 else fields 
+        self.fields = [] if len(fields) == 0 else fields
 
     def format(self, record: logging.LogRecord) -> str:
         """
