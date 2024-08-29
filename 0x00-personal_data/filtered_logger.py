@@ -17,6 +17,9 @@ class RedactingFormatter(logging.Formatter):
     SEPARATOR = ";"
 
     def __init__(self, fields: Optional[List[str]] = None):
+        """
+        initialize formatter with with sensitive fields to redact
+        """
         super(RedactingFormatter, self).__init__(self.FORMAT)
         self.fields = [] if fields is None else fields
 
