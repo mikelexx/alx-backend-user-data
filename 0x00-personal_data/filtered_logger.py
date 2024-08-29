@@ -87,3 +87,39 @@ def filter_datum(fields: List[str], redaction: str, message: str,
         r'([^{}]*=[^{}]*){}'.format(separator, separator, separator), lambda
         match: re.sub(r'=.+', f'={redaction}{separator}', match.group(0))
         if match.group(0).split('=')[0] in fields else match.group(0), message)
+
+def main() -> None:
+    db = get_db()
+    cursor = db.cursor()
+    
+    cursor.execute("SELECT * FROM users;")
+    logger = get_logger()
+    lno = 0
+    for row in cursor:
+        record = logger.makeRecord(
+            name='users',
+            level=logging.INFO,
+            fn='',  # Optional: Provide the file name or leave it empty
+            lno=lno,  # Optional: Provide the line number or use 0
+            msg=row,
+            args=(),
+            exc_info=None
+        )
+        formatter = RedactingFormatter(['phone', 'email', 'ssn', 'name', 'password'])
+        message = ";".join(f"{field}={value}" for field, value in zip(cursor.column_names, row))
+        record.msg = message
+        formatted_message = formatter.format(record)
+        message_words = formatted_message.split(';')
+        formatted_message = '; '.join(message_words)
+        record.msg = formatted_message
+        logger.callHandlers(record)
+        lno += 1
+
+        
+        
+
+
+    cursor.close()
+    db.close()
+if __name__ == "__main__":
+    main()    
