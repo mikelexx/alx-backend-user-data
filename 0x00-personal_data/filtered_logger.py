@@ -2,6 +2,8 @@
 """
 obfuscating sensitive data
 """
+import mysql.connector
+import os
 import re
 from typing import List, Optional, Union
 import logging
@@ -50,6 +52,22 @@ def get_logger() -> logging.Logger:
     streamhandler.setFormatter(RedactingFormatter(PII_FIELDS))
     logger.addHandler(streamhandler)
     return logger
+
+
+def get_db() -> mysql.connector.connection.MySQLConnection:
+    """
+    returns: connector to the database (
+    mysql.connector.connection.MySQLConnection object)
+    """
+    database = os.getenv('PERSONAL_DATA_DB_NAME')
+    user = os.getenv('PERSONAL_DATA_DB_USERNAME') or 'root'
+    password = os.getenv('PERSONAL_DATA_DB_PASSWORD') or ''
+    host = os.getenv('PERSONAL_DATA_DB_HOST') or 'localhost'
+    connector = mysql.connector.connection.MySQLConnection(user=user,
+                                                           password=password,
+                                                           host=host,
+                                                           database=database)
+    return connector
 
 
 def filter_datum(fields: List[str], redaction: str, message: str,
