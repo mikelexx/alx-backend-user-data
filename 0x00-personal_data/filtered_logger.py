@@ -27,6 +27,7 @@ class RedactingFormatter(logging.Formatter):
         """
         formats a log record while obfuscating sensitive fields
         """
+        NotImplementedError
         message = filter_datum(self.fields, self.REDACTION,
                                record.getMessage(), self.SEPARATOR)
         record.msg = message
