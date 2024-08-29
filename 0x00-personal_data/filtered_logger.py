@@ -16,12 +16,12 @@ class RedactingFormatter(logging.Formatter):
     FORMAT = "[HOLBERTON] %(name)s %(levelname)s %(asctime)-15s: %(message)s"
     SEPARATOR = ";"
 
-    def __init__(self, fields: Optional[List[str]] = None):
+    def __init__(self, fields: List[str]):
         """
         initialize formatter with with sensitive fields to redact
         """
         super(RedactingFormatter, self).__init__(self.FORMAT)
-        self.fields = [] if fields is None else fields
+        self.fields = [] if len(fields) == 0 else fields 
 
     def format(self, record: logging.LogRecord) -> str:
         """
