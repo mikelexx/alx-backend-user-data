@@ -88,10 +88,15 @@ def filter_datum(fields: List[str], redaction: str, message: str,
         match: re.sub(r'=.+', f'={redaction}{separator}', match.group(0))
         if match.group(0).split('=')[0] in fields else match.group(0), message)
 
+
 def main() -> None:
+    """
+    will connect to the database, retrieve each row and display it
+    in formatted form using logger
+    """
     db = get_db()
     cursor = db.cursor()
-    
+
     cursor.execute("SELECT * FROM users;")
     logger = get_logger()
     lno = 0
@@ -103,10 +108,11 @@ def main() -> None:
             lno=lno,  # Optional: Provide the line number or use 0
             msg=row,
             args=(),
-            exc_info=None
-        )
-        formatter = RedactingFormatter(['phone', 'email', 'ssn', 'name', 'password'])
-        message = ";".join(f"{field}={value}" for field, value in zip(cursor.column_names, row))
+            exc_info=None)
+        formatter = RedactingFormatter(
+            ['phone', 'email', 'ssn', 'name', 'password'])
+        message = ";".join(f"{field}={value}"
+                           for field, value in zip(cursor.column_names, row))
         record.msg = message
         formatted_message = formatter.format(record)
         message_words = formatted_message.split(';')
@@ -115,11 +121,9 @@ def main() -> None:
         logger.callHandlers(record)
         lno += 1
 
-        
-        
-
-
     cursor.close()
     db.close()
+
+
 if __name__ == "__main__":
-    main()    
+    main()
