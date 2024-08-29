@@ -4,8 +4,9 @@ obfuscating sensitive data
 """
 import re
 from typing import List, Optional, Union
-
 import logging
+
+PII_FIELDS = ("email", "phone", "ssn", "password", "ip")
 
 
 class RedactingFormatter(logging.Formatter):
@@ -27,12 +28,28 @@ class RedactingFormatter(logging.Formatter):
         """
         formats a log record while obfuscating sensitive fields
         """
-        NotImplementedError
         message = filter_datum(self.fields, self.REDACTION,
                                record.getMessage(), self.SEPARATOR)
         record.msg = message
         formatted_message = super().format(record)
         return formatted_message
+
+
+def get_logger() -> logging.Logger:
+    """
+    returns:loggin.Logger object.
+    The logger should be named "user_data" and
+    only log up to logging.INFO level. It should not propagate messages
+    to other loggers. It should have a StreamHandler
+    with RedactingFormatter as formatter
+    """
+    logger = logging.getLogger('user_data')
+    logger.setLevel(logging.INFO)
+    logger.propagate = False
+    streamhandler = logging.StreamHandler()
+    streamhandler.setFormatter(RedactingFormatter(PII_FIELDS))
+    logger.addHandler(streamhandler)
+    return logger
 
 
 def filter_datum(fields: List[str], redaction: str, message: str,
