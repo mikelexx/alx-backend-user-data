@@ -14,6 +14,9 @@ class BasicAuth(Auth):
     def extract_base64_authorization_header(self,
                                             authorization_header: str) -> str:
         """
+        args:
+        authorization_header: authorization header
+            supposed to contain scheme and credentials part
         returns the Base64 part of the Authorization header for
         a Basic Authentication
         """
@@ -22,3 +25,20 @@ class BasicAuth(Auth):
                 or not authorization_header.startswith('Basic '):
             return
         return authorization_header.split(' ')[1]
+
+    def decode_base64_authorization_header(
+            self, base64_authorization_header: str) -> str:
+        """
+        Args:
+            base64_authorization_header: base64 string
+        returns the decoded value
+        of a Base64 string base64_authorization_header
+        """
+        if not base64_authorization_header \
+                or type(base64_authorization_header) is not str:
+            return
+        try:
+            base64_decoded_str = base64.b64decode(base64_authorization_header)
+            return base64_decoded_str.decode('utf-8')
+        except Exception as e:
+            return
