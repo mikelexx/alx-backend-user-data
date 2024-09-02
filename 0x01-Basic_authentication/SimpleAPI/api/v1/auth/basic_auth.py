@@ -4,6 +4,8 @@ implements Basic authenticate scheme
 """
 import base64
 from .auth import Auth
+from models.user import User
+from typing import TypeVar
 
 
 class BasicAuth(Auth):
@@ -57,3 +59,18 @@ class BasicAuth(Auth):
                 or ':' not in decoded_base64_authorization_header:
             return (None, None)
         return tuple(decoded_base64_authorization_header.split(':'))
+
+    def user_object_from_credentials(self, user_email: str,
+                                     user_pwd: str) -> TypeVar('User'):
+        """
+        returns `User` instance based on his email and password
+        """
+        if user_email is None or type(user_email) is not str:
+            return
+        if user_pwd is None or type(user_pwd) is not str:
+            return
+        all_users = User.count()
+        users = User.search({'email': user_email})
+        for user in users:
+            if User.is_valid_password(user, user_pwd):
+                return user
