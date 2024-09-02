@@ -9,9 +9,13 @@ from flask_cors import (CORS, cross_origin)
 import os
 
 auth = None
-if os.getenv('AUTH_TYPE'):
+auth_type = os.getenv('AUTH_TYPE')
+if auth_type == 'auth':
     from api.v1.auth.auth import Auth
     auth = Auth()
+if auth_type == 'basic_auth':
+    from api.v1.auth.basic_auth import BasicAuth
+    auth = BasicAuth()
 
 app = Flask(__name__)
 app.register_blueprint(app_views)
@@ -29,10 +33,8 @@ def filter_request():
                     ['/api/v1/status/', '/api/v1/unauthorized/',
                      '/api/v1/forbidden/']):
         if not auth.authorization_header(request):
-            print('before_request did not fined authorization_header ')
             abort(401)
         if not auth.current_user(request):
-            print('before_request did not find current_user')
             abort(403)
 
 
