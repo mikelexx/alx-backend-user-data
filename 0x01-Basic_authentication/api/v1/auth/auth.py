@@ -17,11 +17,11 @@ class Auth:
         """
         if path is None or not excluded_paths:
             return True
-        excluded_paths = [
-            path[::-1] if path[-1] == '*' else path for path in excluded_paths
-        ]
-        if path in excluded_paths or path + '/' in excluded_paths:
-            return False
+        for excluded_path in excluded_paths:
+            if path.startswith(excluded_path[:-1]) \
+                    and excluded_path[-1] == '*' \
+                    or excluded_path == path or excluded_path == path + '/':
+                return False
         return True
 
     def authorization_header(self, request=None) -> str:
