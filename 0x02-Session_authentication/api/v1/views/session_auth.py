@@ -27,11 +27,25 @@ def autheticate_session():
         for user in users:
             if user and user.is_valid_password(user_pwd):
                 from api.v1.app import auth
-                auth.create_session(user.id)
+                session_id = auth.create_session(user.id)
                 resp = jsonify(user.to_json())
                 cookie_name = os.getenv('SESSION_NAME')
-                resp.set_cookie(cookie_name, user.id)
+                resp.set_cookie(cookie_name, session_id)
                 return resp
         return jsonify({'error': 'wrong password'}), 401
     except Exception:
         return jsonify({'error': 'no user found for this email'}), 404
+
+
+@app_views.route('/auth_session/logout',
+                 methods=['DELETE'],
+                 strict_slashes=False)
+def log_out_of_session():
+    """
+    deletes session associated from this request
+    (logout the user of this session)
+    """
+    from api.v1.app import auth
+    if not auth.destroy_session(request):
+        abort(404)
+    return jsonify({}), 200
