@@ -20,6 +20,8 @@ class SessionDBAuth(SessionExpAuth):
         if not session_id:
             return
         user_session_id = UserSession(user_id=user_id, session_id=session_id)
+        if not user_session_id:
+            return
         user_session_id.save()
         return session_id
 
