@@ -47,6 +47,9 @@ class SessionDBAuth(SessionExpAuth):
         user_session = UserSession.get(session_id)
         if not user_session:
             return False
-        user_session.remove()
-        user_session.save()
+        try:
+            user_session.remove()
+            UserSession.save_to_file()
+        except Exception:
+            return False
         return True
