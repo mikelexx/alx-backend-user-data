@@ -30,6 +30,8 @@ class SessionDBAuth(SessionExpAuth):
         returns `user_id` by requesting UserSession in the
         database based on `session_id`
         """
+        if not session_id or not type(session_id) is str:
+            return
         user_session = UserSession.get(session_id)
         if user_session:
             return user_session.get('user_id')
