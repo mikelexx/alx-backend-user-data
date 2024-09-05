@@ -33,7 +33,7 @@ def autheticate_session():
                 resp.set_cookie(cookie_name, session_id)
                 return resp
         return jsonify({'error': 'wrong password'}), 401
-    except Exception:
+    except Exception as e:
         return jsonify({'error': 'no user found for this email'}), 404
 
 
