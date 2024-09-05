@@ -35,17 +35,16 @@ class SessionExpAuth(SessionAuth):
 
     def user_id_for_session_id(self, session_id=None) -> str:
         """
-       extracts user_id from the `session_id` provided
-       if the session has not expired yet else returns None
-       """
-        if not session_id:
+        extracts user_id from the `session_id` provided
+        if the session has not expired yet else returns None
+        """
+        if not session_id or not type(session_id) is str \
+                or session_id not in self.user_id_by_session_id:
             return
-        session_dictionary = self.user_id_by_session_id[session_id]
-        if not session_dictionary:
-            return
+        session_dictionary = self.user_id_by_session_id.get(session_id)
         user_id = session_dictionary.get('user_id')
         created_at = session_dictionary.get('created_at')
-        if self.session_duration <= 0:
+        if not created_at or self.session_duration <= 0:
             return user_id
         if (datetime.now() - created_at).seconds > self.session_duration:
             return
