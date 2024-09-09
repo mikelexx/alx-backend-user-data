@@ -3,6 +3,7 @@
 hashing password
 """
 import bcrypt
+from uuid import uuid4
 from user import User
 from db import DB
 from sqlalchemy.orm.exc import NoResultFound
@@ -46,5 +47,26 @@ class Auth:
             is_valid_pwd = bcrypt.checkpw(password.encode('utf-8'),
                                           user.hashed_password.encode('utf-8'))
             return is_valid_pwd
-        except Exception as e:
+        except Exception: 
             return False
+
+    def _generate_uuid(self) -> str:
+        """
+        generates a random uuid, and returns a string reprentation
+        of the id
+        """
+        return str(uuid4())
+
+    def create_session(self, email: str) -> str:
+        """
+        finds user corresponding to the email, generates a new UUID and 
+        stores it in the database as the user's session ID, then returns
+        the session ID
+        """
+        try:
+            user =  self._db.find_user_by(email=email)
+            new_session_id = self._generate_uuid()
+            self._db.update_user(user.id, session_id=new_session_id)
+            return new_session_id
+        except Exception:
+            pass
