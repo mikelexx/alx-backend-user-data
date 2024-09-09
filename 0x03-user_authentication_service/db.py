@@ -67,3 +67,20 @@ class DB:
         except Exception as e:
             print(f'error man: {e}')
             raise
+    def update_user(self, user_id: int, **kwargs) -> None:
+        """
+        The method uses `find_user_by` to locate the user 
+        to update, then will update the users 
+        attributes as passed in the methods arguments 
+        then commit changes to the database.
+
+        If an argument that does not correspond to a user 
+        attribute is passed, a ValueError is raised.
+        """
+        user =  self.find_user_by(id=user_id)
+        if user:
+            for key, val in kwargs.items():
+                if hasattr(user, key):
+                    setattr(user, key, val)
+                else:
+                    raise ValueError
