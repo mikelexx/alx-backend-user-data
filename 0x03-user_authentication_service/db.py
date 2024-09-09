@@ -54,6 +54,12 @@ class DB:
         takes in arbitrary keyword arguments and returns the first
         row found in the users table as filtered by the
         method's input arguments
+        raises : 
+            NoResultFound(sqlalchemy.orm.exc) -  if no user with 
+                matching params is found 
+            InvalidRequestError(sqlalchemy.orm.exc) - if supplied 
+                params are not recognized
+                by database
         """
         try:
             user = self._session.query(User).filter_by(**kwargs).first()
