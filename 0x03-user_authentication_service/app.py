@@ -2,7 +2,7 @@
 """
 set up a basic Flask app
 """
-from flask import Flask, json, jsonify, request, abort
+from flask import Flask, json, jsonify, redirect, request, abort
 from auth import Auth
 
 app = Flask(__name__)
@@ -46,6 +46,35 @@ def login():
     resp = jsonify({'email': email, 'message': 'logged in'})
     resp.set_cookie('session_id', session_id)
     return resp
+
+
+@app.route('/sessions', methods=['DELETE'], strict_slashes=False)
+def logout():
+    """
+    finds the user with given session id from cookie and destroys it,
+    then redirects to `GET /`. If the user doesn't
+    exist, aborts with 403 status
+    """
+    session_id = request.cookies.get('session_id')
+    user = auth.get_user_from_session_id(session_id)
+    if not user:
+        abort(403)
+    auth.destroy_session(user.id)
+    return redirect('/')
+
+
+@app.route('/profile', methods=['GET'], strict_slashes=False)
+def profile():
+    """
+    gets a user profile using session id from cookie
+    """
+    session_id = request.cookies.get('session_id')
+    if not session_id or not type(session_id) is str:
+        abort(403)
+    user = auth.get_user_from_session_id(session_id)
+    if not user:
+        abort(403)
+    return jsonify({'email': user.email})
 
 
 if __name__ == '__main__':

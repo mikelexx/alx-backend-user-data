@@ -2,6 +2,7 @@
 """
 hashing password
 """
+from typing import Union
 import bcrypt
 from uuid import uuid4
 from user import User
@@ -47,7 +48,7 @@ class Auth:
             is_valid_pwd = bcrypt.checkpw(password.encode('utf-8'),
                                           user.hashed_password.encode('utf-8'))
             return is_valid_pwd
-        except Exception: 
+        except Exception:
             return False
 
     def _generate_uuid(self) -> str:
@@ -59,14 +60,36 @@ class Auth:
 
     def create_session(self, email: str) -> str:
         """
-        finds user corresponding to the email, generates a new UUID and 
+        finds user corresponding to the email, generates a new UUID and
         stores it in the database as the user's session ID, then returns
         the session ID
         """
         try:
-            user =  self._db.find_user_by(email=email)
+            user = self._db.find_user_by(email=email)
             new_session_id = self._generate_uuid()
             self._db.update_user(user.id, session_id=new_session_id)
             return new_session_id
+        except Exception:
+            pass
+
+    def get_user_from_session_id(self, session_id: str) -> Union[User, None]:
+        """
+        gets and returns user from database
+        using `session_id` provided else returns None if user not found
+        """
+        if not session_id:
+            return None
+        try:
+            user = self._db.find_user_by(session_id=session_id)
+            return user
+        except Exception:
+            return None
+
+    def destroy_session(self, user_id: int) -> None:
+        """
+        updates the corresponding user's session ID to none
+        """
+        try:
+            self._db.update_user(user_id, session_id=None)
         except Exception:
             pass
