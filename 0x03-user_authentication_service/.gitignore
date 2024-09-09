@@ -1,2 +1,4 @@
 **/*.pyc
 myenv
+a.db
+todo
