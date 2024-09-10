@@ -43,6 +43,7 @@ def login() -> str:
     is_valid_user = auth.valid_login(email, password)
     if is_valid_user:
         session_id = auth.create_session(email)
+        email = "{}".format(email)
         resp = make_response(
             jsonify({
                 "email": email,
