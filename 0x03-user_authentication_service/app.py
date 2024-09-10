@@ -38,19 +38,21 @@ def login() -> str:
     """
     logs in an user and registers a new session id for the user
     """
-    email = request.form.get('email')
-    password = request.form.get('password')
-    is_valid_user = auth.valid_login(email, password)
-    if is_valid_user:
-        session_id = auth.create_session(email)
-        email = "{}".format(email)
-        resp = make_response(jsonify({
-                "email": email,
+    email = request.form.get('email').strip()
+    password = request.form.get('password').strip()
+    try:
+        is_valid_user = auth.valid_login(email, password)
+        if is_valid_user:
+            session_id = auth.create_session(email)
+            resp = jsonify({
+                "email": "{}".format(email),
                 "message": "logged in"
-            }))
-        resp.set_cookie('session_id', session_id)
-        return resp
-    abort(401)
+            })
+            resp.set_cookie('session_id', session_id)
+            return resp
+        abort(401)
+    except Exception:
+        abort(401)
 
 
 @app.route('/sessions', methods=['DELETE'], strict_slashes=False)
