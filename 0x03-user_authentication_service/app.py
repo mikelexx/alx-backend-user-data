@@ -35,10 +35,10 @@ def users():
 
 @app.route('/sessions', methods=['POST'], strict_slashes=False)
 def login():
-    """logs in an user and registers a
+    """
+    logs in an user and registers a
       new session id for the user
     Returns: sessio_id of the logged in user 
-    """
     email = request.form.get('email')
     password = request.form.get('password')
     if not auth.valid_login(email, password):
@@ -47,6 +47,8 @@ def login():
     resp = jsonify({"email": f"{email}", "message": "logged in"})
     resp.set_cookie('session_id', new_session_id)
     return resp
+    """
+    pass
 
 
 @app.route('/sessions', methods=['DELETE'], strict_slashes=False)
