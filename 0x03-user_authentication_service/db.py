@@ -19,7 +19,7 @@ class DB:
     def __init__(self) -> None:
         """Initialize a new DB instance
         """
-        self._engine = create_engine("sqlite:///a.db", echo=True)
+        self._engine = create_engine("sqlite:///a.db", echo=False)
         Base.metadata.drop_all(self._engine)
         Base.metadata.create_all(self._engine)
         self.__session = None
@@ -55,10 +55,10 @@ class DB:
         takes in arbitrary keyword arguments and returns the first
         row found in the users table as filtered by the
         method's input arguments
-        raises : 
-            NoResultFound(sqlalchemy.orm.exc) -  if no user with 
-                matching params is found 
-            InvalidRequestError(sqlalchemy.orm.exc) - if supplied 
+        raises :
+            NoResultFound(sqlalchemy.orm.exc) -  if no user with
+                matching params is found
+            InvalidRequestError(sqlalchemy.orm.exc) - if supplied
                 params are not recognized
                 by database
         """
@@ -74,17 +74,18 @@ class DB:
         except Exception as e:
             print(f'error man: {e}')
             raise
+
     def update_user(self, user_id: int, **kwargs) -> None:
         """
-        The method uses `find_user_by` to locate the user 
-        to update, then will update the users 
-        attributes as passed in the methods arguments 
+        The method uses `find_user_by` to locate the user
+        to update, then will update the users
+        attributes as passed in the methods arguments
         then commit changes to the database.
 
-        If an argument that does not correspond to a user 
+        If an argument that does not correspond to a user
         attribute is passed, a ValueError is raised.
         """
-        user =  self.find_user_by(id=user_id)
+        user = self.find_user_by(id=user_id)
         if user:
             for key, val in kwargs.items():
                 if hasattr(user, key):
