@@ -3,6 +3,7 @@
 set up a basic Flask app
 """
 
+from codecs import strict_errors
 from flask import Flask, jsonify, redirect, request, abort, make_response
 from auth import Auth
 
@@ -34,21 +35,20 @@ def users():
 
 
 @app.route('/sessions', methods=['POST'], strict_slashes=False)
-def login() -> str:
+def login():
     """
-    logs in an user and registers a
-      new session id for the user
-    Returns: sessio_id of the logged in user
+    creates a new session for the user, stores it's session ID
+    as cookie with key "session_id" on the response
+    Return: a JSON payload
+    """
     email = request.form.get('email')
     password = request.form.get('password')
     if not auth.valid_login(email, password):
-        abort(401)
-    new_session_id = auth.create_session(email)
-    resp = jsonify({"email": f"{email}", "message": "logged in"})
-    resp.set_cookie('session_id', new_session_id)
-    return resp
-    """
-    return jsonify({})
+        abort(404)
+    session_id = auth.create_session(email)
+    response = jsonify({"email": email, "message": "logged in"})
+    response.set_cookie('session_id', session_id)
+    return response
 
 
 @app.route('/sessions', methods=['DELETE'], strict_slashes=False)
