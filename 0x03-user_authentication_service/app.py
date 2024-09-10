@@ -38,7 +38,7 @@ def login():
     """
     logs in an user and registers a
       new session id for the user
-    Returns: sessio_id of the logged in user 
+    Returns: sessio_id of the logged in user
     email = request.form.get('email')
     password = request.form.get('password')
     if not auth.valid_login(email, password):
