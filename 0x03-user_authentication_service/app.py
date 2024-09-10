@@ -2,7 +2,6 @@
 """
 set up a basic Flask app
 """
-from codecs import strict_errors
 from flask import Flask, json, jsonify, redirect, request, abort
 from auth import Auth
 
@@ -32,7 +31,6 @@ def register_user():
     except Exception:
         return jsonify({'message': 'email already registered'}), 400
 
-
 @app.route('/sessions', methods=['POST'], strict_slashes=False)
 def login():
     """
@@ -47,7 +45,6 @@ def login():
     resp = jsonify({'email': email, 'message': 'logged in'})
     resp.set_cookie('session_id', session_id)
     return resp
-
 
 @app.route('/sessions', methods=['DELETE'], strict_slashes=False)
 def logout():
