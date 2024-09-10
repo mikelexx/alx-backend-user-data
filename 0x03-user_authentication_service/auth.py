@@ -93,3 +93,33 @@ class Auth:
             self._db.update_user(user_id, session_id=None)
         except Exception:
             pass
+
+    def get_reset_password_token(self, email: str) -> str:
+        """
+        generates a UUID and updates the user matching the `email`
+        reset_token
+        database field
+        raises:
+            ValueError: if the user doesn't exist
+        returns: generated uuid
+        """
+        try:
+            user = self._db.find_user_by(email=email)
+            uuid = self._generate_uuid()
+            setattr(user, 'reset_token', uuid)
+            return uuid
+        except Exception:
+            raise ValueError
+    def update_password(self, reset_token: str, password: str) -> None:
+        """
+            updates the user's password with the new `password` provided
+            raises:
+                ValueError: if no user matching the `reset_token` is found
+        """
+        try:
+            user = self._db.find_user_by(reset_token=reset_token)
+            hashed_password =  _hash_password(password)
+            self._db.update_user(user.id, hashed_password=hashed_password, reset_token=None)
+        except Exception:
+            raise ValueError
+
