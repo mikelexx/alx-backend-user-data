@@ -44,8 +44,7 @@ def login() -> str:
     if is_valid_user:
         session_id = auth.create_session(email)
         resp = jsonify({"email": f"{email}", "message": "logged in"})
-        if session_id:
-            resp.set_cookie('session_id', session_id)
+        resp.set_cookie('session_id', session_id)
         return resp
     abort(401)
 
@@ -66,7 +65,7 @@ def logout():
 
 
 @app.route('/profile', methods=['GET'], strict_slashes=False)
-def profile():
+def profile() -> str:
     """
     gets a user profile using session id from cookie
     """
@@ -80,7 +79,7 @@ def profile():
 
 
 @app.route('/reset_password', methods=['post'], strict_slashes=False)
-def get_reset_password_token():
+def get_reset_password_token() -> str:
     """
     generates a token
     """
@@ -93,7 +92,7 @@ def get_reset_password_token():
 
 
 @app.route('/reset_password', methods=['PUT'], strict_slashes=False)
-def update_password():
+def update_password() -> str:
     """
     updates user password
     required:
