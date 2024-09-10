@@ -34,7 +34,7 @@ def users():
 
 
 @app.route('/sessions', methods=['POST'], strict_slashes=False)
-def login():
+def user_login():
     """
     logs in an user and registers a new session id for the user
     """
@@ -45,7 +45,7 @@ def login():
         new_session_id = auth.create_session(email)
         resp = jsonify({"email": f"{email}", "message": "logged in"})
         resp.set_cookie('session_id', new_session_id)
-        return resp, 200
+        return resp 
     else:
         abort(401)
 
