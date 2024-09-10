@@ -44,10 +44,10 @@ def login() -> str:
     if is_valid_user:
         session_id = auth.create_session(email)
         email = "{}".format(email)
-        resp = jsonify({
+        resp = make_response(jsonify({
                 "email": email,
                 "message": "logged in"
-            })
+            }))
         resp.set_cookie('session_id', session_id)
         return resp
     abort(401)
