@@ -3,8 +3,8 @@
 hashing password
 """
 
-from typing import Union
 import bcrypt
+from typing import Union
 from uuid import uuid4
 from user import User
 from db import DB
@@ -111,6 +111,7 @@ class Auth:
             return uuid
         except Exception:
             raise ValueError
+
     def update_password(self, reset_token: str, password: str) -> None:
         """
             updates the user's password with the new `password` provided
@@ -119,8 +120,9 @@ class Auth:
         """
         try:
             user = self._db.find_user_by(reset_token=reset_token)
-            hashed_password =  _hash_password(password)
-            self._db.update_user(user.id, hashed_password=hashed_password, reset_token=None)
+            hashed_password = _hash_password(password)
+            self._db.update_user(user.id,
+                                 hashed_password=hashed_password,
+                                 reset_token=None)
         except Exception:
             raise ValueError
-
