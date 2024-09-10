@@ -19,6 +19,14 @@ def _hash_password(password: str) -> bytes:
     return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
 
+def _generate_uuid() -> str:
+    """
+    generates a random uuid, and returns a string reprentation
+    of the id
+    """
+    return uuid4().__str__()
+
+
 class Auth:
     """Auth class to interact with the authentication database.
     """
@@ -52,13 +60,6 @@ class Auth:
         except Exception:
             return False
 
-    def _generate_uuid(self) -> str:
-        """
-        generates a random uuid, and returns a string reprentation
-        of the id
-        """
-        return uuid4().__str__()
-
     def create_session(self, email: str) -> str:
         """
         finds user corresponding to the email, generates a new UUID and
@@ -67,7 +68,7 @@ class Auth:
         """
         try:
             user = self._db.find_user_by(email=email)
-            new_session_id = self._generate_uuid()
+            new_session_id = _generate_uuid()
             self._db.update_user(user.id, session_id=new_session_id)
             return new_session_id
         except Exception:
@@ -106,7 +107,7 @@ class Auth:
         """
         try:
             user = self._db.find_user_by(email=email)
-            uuid = self._generate_uuid()
+            uuid = _generate_uuid()
             setattr(user, 'reset_token', uuid)
             return uuid
         except Exception:
