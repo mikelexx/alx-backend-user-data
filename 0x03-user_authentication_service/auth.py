@@ -2,6 +2,7 @@
 """
 hashing password
 """
+
 from typing import Union
 import bcrypt
 from uuid import uuid4
