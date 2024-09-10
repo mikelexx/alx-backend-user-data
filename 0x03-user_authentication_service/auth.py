@@ -57,7 +57,7 @@ class Auth:
         generates a random uuid, and returns a string reprentation
         of the id
         """
-        return str(uuid4())
+        return uuid4().__str__()
 
     def create_session(self, email: str) -> str:
         """
