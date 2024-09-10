@@ -40,14 +40,16 @@ def login() -> str:
     """
     email = request.form.get('email')
     password = request.form.get('password')
+    if not email:
+        abort(401)
     is_valid_user = auth.valid_login(email, password)
     if is_valid_user:
         session_id = auth.create_session(email)
         resp = jsonify({"email": f"{email}", "message": "logged in"})
         resp.set_cookie('session_id', session_id)
         return resp
-    else:
-        abort(401)
+    abort(401)
+
 
 @app.route('/sessions', methods=['DELETE'], strict_slashes=False)
 def logout():
@@ -63,6 +65,7 @@ def logout():
     auth.destroy_session(user.id)
     return redirect('/')
 
+
 @app.route('/profile', methods=['GET'], strict_slashes=False)
 def profile():
     """
@@ -76,6 +79,7 @@ def profile():
         abort(403)
     return jsonify({'email': user.email})
 
+
 @app.route('/reset_password', methods=['post'], strict_slashes=False)
 def get_reset_password_token():
     """
@@ -87,6 +91,7 @@ def get_reset_password_token():
         return jsonify({'email': email, 'reset_token': reset_token})
     except ValueError:
         abort(403)
+
 
 @app.route('/reset_password', methods=['PUT'], strict_slashes=False)
 def update_password():
