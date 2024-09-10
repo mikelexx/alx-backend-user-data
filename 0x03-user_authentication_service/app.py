@@ -2,6 +2,7 @@
 """
 set up a basic Flask app
 """
+
 from flask import Flask, json, jsonify, redirect, request, abort
 from auth import Auth
 
@@ -42,7 +43,7 @@ def login():
     if not is_valid_user:
         abort(401)
     session_id = auth.create_session(email)
-    resp = jsonify({'email': email, 'message': 'logged in'})
+    resp = jsonify({'email': f'{email}', 'message': 'logged in'})
     resp.set_cookie('session_id', session_id)
     return resp
 
