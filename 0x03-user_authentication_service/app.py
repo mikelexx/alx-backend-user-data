@@ -17,6 +17,7 @@ def index():
     """
     return jsonify({"message": "Bienvenue"})
 
+
 @app.route('/users', methods=['POST'], strict_slashes=False)
 def register_user():
     """
@@ -31,6 +32,7 @@ def register_user():
     except Exception:
         return jsonify({'message': 'email already registered'}), 400
 
+
 @app.route('/sessions', methods=['POST'], strict_slashes=False)
 def login() -> str:
     """
@@ -39,12 +41,13 @@ def login() -> str:
     email = request.form.get('email')
     password = request.form.get('password')
     is_valid_user = auth.valid_login(email, password)
-    if not is_valid_user:
-        abort(401)
-    session_id = auth.create_session(email)
-    resp = jsonify({"email": f"{email}", "message": "logged in"})
-    resp.set_cookie('session_id', session_id)
-    return resp
+    if is_valid_user:
+        session_id = auth.create_session(email)
+        resp = jsonify({"email": f"{email}", "message": "logged in"})
+        resp.set_cookie('session_id', session_id)
+        return resp
+    abort(401)
+
 
 @app.route('/sessions', methods=['DELETE'], strict_slashes=False)
 def logout():
