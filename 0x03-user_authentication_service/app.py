@@ -3,12 +3,11 @@
 set up a basic Flask app
 """
 
-from codecs import strict_errors
-from flask import Flask, jsonify, redirect, request, abort, make_response
+from flask import Flask, jsonify, redirect, request, abort
 from auth import Auth
 
-app = Flask(__name__)
 auth = Auth()
+app = Flask(__name__)
 
 
 @app.route('/', methods=['GET'], strict_slashes=False)
