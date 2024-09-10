@@ -34,7 +34,7 @@ def users():
 
 
 @app.route('/sessions', methods=['POST'], strict_slashes=False)
-def user_login():
+def login():
     """
     logs in an user and registers a new session id for the user
     """
