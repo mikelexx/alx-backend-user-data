@@ -2,6 +2,7 @@
 """
 manages user models and database schema
 """
+
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, VARCHAR, VARCHAR
 
@@ -13,6 +14,7 @@ class User(Base):
     model for a database table names `users`
     """
     __tablename__ = 'users'
+
     id = Column(Integer, primary_key=True)
     email = Column(VARCHAR(250), nullable=False)
     hashed_password = Column(VARCHAR(250), nullable=False)
