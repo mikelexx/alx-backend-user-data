@@ -32,8 +32,9 @@ def register_user():
     except Exception:
         return jsonify({'message': 'email already registered'}), 400
 
+
 @app.route('/sessions', methods=['POST'], strict_slashes=False)
-def login():
+def login() -> str:
     """
     logs in an user and registers a new session id for the user
     """
@@ -46,6 +47,7 @@ def login():
     resp = jsonify({'email': f'{email}', 'message': 'logged in'})
     resp.set_cookie('session_id', session_id)
     return resp
+
 
 @app.route('/sessions', methods=['DELETE'], strict_slashes=False)
 def logout():
