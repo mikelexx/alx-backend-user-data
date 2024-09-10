@@ -19,7 +19,7 @@ def index():
 
 
 @app.route('/users', methods=['POST'], strict_slashes=False)
-def register_user():
+def users():
     """
     an  api point to register user
     must supply : email, password
