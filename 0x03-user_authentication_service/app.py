@@ -34,7 +34,7 @@ def users():
 
 
 @app.route('/sessions', methods=['POST'], strict_slashes=False)
-def login():
+def login() -> str:
     """
     logs in an user and registers a
       new session id for the user
@@ -48,7 +48,7 @@ def login():
     resp.set_cookie('session_id', new_session_id)
     return resp
     """
-    pass
+    return jsonify({})
 
 
 @app.route('/sessions', methods=['DELETE'], strict_slashes=False)
