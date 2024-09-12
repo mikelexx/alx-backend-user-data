@@ -39,7 +39,6 @@ def login():
     """
     creates a new session for the user, stores it's session ID
     as cookie with key "session_id" on the response
-    Return: a JSON payload
     """
     email = request.form.get('email')
     password = request.form.get('password')
