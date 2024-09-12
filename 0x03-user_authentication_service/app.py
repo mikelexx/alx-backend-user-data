@@ -34,7 +34,7 @@ def users():
         return jsonify({'message': 'email already registered'}), 400
 
 
-@app.route('/sessions', methods=['DELETE'], strict_slashes=False)
+@app.route('/sessions2', methods=['DELETE'], strict_slashes=False)
 def logout():
     """
     finds the user with given session id from cookie and destroys it,
