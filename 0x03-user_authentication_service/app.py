@@ -11,6 +11,24 @@ auth = Auth()
 app = Flask(__name__)
 
 
+@app.route('/sessions', methods=['POST'], strict_slashes=False)
+def login():
+    """
+    creates a new session for the user, stores it's session ID
+    as cookie with key "session_id" on the response
+    retuns:json code and status code 200 for sucess, else aborts
+    with 401 status code
+    """
+    email = request.form.get('email')
+    password = request.form.get('password')
+    if not auth.valid_login(email, password):
+        abort(401)
+    session_id = auth.create_session(email)
+    response = jsonify({"email": email, "message": "logged in"})
+    response.set_cookie('session_id', session_id)
+    return response, 200
+
+
 @app.route('/', methods=['GET'], strict_slashes=False)
 def index():
     """
@@ -34,7 +52,7 @@ def users():
         return jsonify({'message': 'email already registered'}), 400
 
 
-@app.route('/sessions2', methods=['DELETE'], strict_slashes=False)
+@app.route('/sessions', methods=['DELETE'], strict_slashes=False)
 def logout():
     """
     finds the user with given session id from cookie and destroys it,
