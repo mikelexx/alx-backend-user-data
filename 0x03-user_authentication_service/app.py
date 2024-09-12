@@ -4,6 +4,7 @@ set up a basic Flask app
 """
 
 from flask import Flask, jsonify, redirect, request, abort
+from flask import url_for
 from auth import Auth
 
 auth = Auth()
@@ -62,7 +63,7 @@ def logout():
     if not user:
         abort(403)
     auth.destroy_session(user.id)
-    return redirect('/')
+    return redirect(url_for('/'))
 
 
 @app.route('/profile', methods=['GET'], strict_slashes=False)
