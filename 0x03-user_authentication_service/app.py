@@ -36,9 +36,6 @@ def users():
 
 @app.route('/sessions', methods=['POST'], strict_slashes=False)
 def login():
-    """
-    does nothing for now
-    """
     pass
 
 
