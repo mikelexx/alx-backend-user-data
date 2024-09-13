@@ -104,6 +104,8 @@ def update_password() -> str:
     reset_token = request.form.get('reset_token')
     new_password = request.form.get('new_password')
     email = request.form.get('email')
+    if not email or not type(email) is str:
+        abort(403)
     if not reset_token or not type(reset_token) is str:
         abort(403)
     if not new_password or not type(new_password) is str:
