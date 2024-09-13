@@ -7,7 +7,7 @@ from flask import Flask, jsonify, redirect, request, abort
 from flask import url_for
 from auth import Auth
 
-auth = Auth()
+AUTH = Auth()
 app = Flask(__name__)
 
 
@@ -19,14 +19,18 @@ def login():
     retuns:json code and status code 200 for sucess, else aborts
     with 401 status code
     """
-    email = request.form.get('email')
-    password = request.form.get('password')
-    if not auth.valid_login(email, password):
+    try:
+        email = request.form.get('email')
+        password = request.form.get('password')
+        if not AUTH.valid_login(email, password):
+            abort(401)
+        session_id = AUTH.create_session(email)
+        response = jsonify({'email': email, 'message': 'logged in'})
+        response.set_cookie('session_id', session_id)
+        return response, 200
+    except Exception as e:
+        print('failed due to: {}'.format(e))
         abort(401)
-    session_id = auth.create_session(email)
-    response = jsonify({"email": email, "message": "logged in"})
-    response.set_cookie('session_id', session_id)
-    return response, 200
 
 
 @app.route('/', methods=['GET'], strict_slashes=False)
@@ -46,7 +50,7 @@ def users():
     email = request.form.get('email')
     password = request.form.get('password')
     try:
-        user = auth.register_user(email, password)
+        user = AUTH.register_user(email, password)
         return jsonify({'email': f'{email}', 'message': 'user created'})
     except Exception:
         return jsonify({'message': 'email already registered'}), 400
@@ -60,10 +64,10 @@ def logout():
     exist, aborts with 403 status
     """
     session_id = request.cookies.get('session_id')
-    user = auth.get_user_from_session_id(session_id)
+    user = AUTH.get_user_from_session_id(session_id)
     if not user:
         abort(403)
-    auth.destroy_session(user.id)
+    AUTH.destroy_session(user.id)
     return redirect(url_for('/'))
 
 
@@ -75,7 +79,7 @@ def profile() -> str:
     session_id = request.cookies.get('session_id')
     if not session_id or not type(session_id) is str:
         abort(403)
-    user = auth.get_user_from_session_id(session_id)
+    user = AUTH.get_user_from_session_id(session_id)
     if not user:
         abort(403)
     return jsonify({'email': user.email})
@@ -88,7 +92,7 @@ def get_reset_password_token() -> str:
     """
     email = request.form.get('email')
     try:
-        reset_token = auth.get_reset_password_token(email)
+        reset_token = AUTH.get_reset_password_token(email)
         return jsonify({'email': email, 'reset_token': reset_token})
     except ValueError:
         abort(403)
@@ -105,7 +109,7 @@ def update_password() -> str:
     new_password = request.form.get('new_password')
     email = request.form.get('email')
     try:
-        auth.update_password(reset_token, new_password)
+        AUTH.update_password(reset_token, new_password)
         return jsonify({'email': email, 'message': 'Password updated'})
     except ValueError:
         abort(403)
