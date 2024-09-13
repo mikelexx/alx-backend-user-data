@@ -19,18 +19,14 @@ def login():
     retuns:json code and status code 200 for sucess, else aborts
     with 401 status code
     """
-    try:
-        email = request.form.get('email')
-        password = request.form.get('password')
-        if not AUTH.valid_login(email, password):
-            abort(401)
-        session_id = AUTH.create_session(email)
-        response = jsonify({'email': email, 'message': 'logged in'})
-        response.set_cookie('session_id', session_id)
-        return response, 200
-    except Exception as e:
-        print('failed due to: {}'.format(e))
+    email = request.form.get('email')
+    password = request.form.get('password')
+    if not AUTH.valid_login(email, password):
         abort(401)
+    session_id = AUTH.create_session(email)
+    response = jsonify({'email': email, 'message': 'logged in'})
+    response.set_cookie('session_id', session_id)
+    return response
 
 
 @app.route('/', methods=['GET'], strict_slashes=False)
